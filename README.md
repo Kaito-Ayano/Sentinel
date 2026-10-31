@@ -1,8 +1,8 @@
-# AuditAgent — AI-assisted audit demo
+# Sentinel — AI-assisted audit demo
 
 **Deloitte Digital Camp 2026 · Team I · cross-border e-commerce transaction audit & fake-order risk detection**
 
-> **Live demo (GitHub Pages):** <https://kaito-ayano.github.io/auditagent-demo/>
+> **Live demo (GitHub Pages):** <https://kaito-ayano.github.io/sentinel/>
 > 双击 `index.html` 亦可在本地运行（数据走本地 `demo_data.js`，图表需联网加载 ECharts CDN）。
 
 ## What it is
@@ -67,8 +67,8 @@ MIT © 2026 Liu Jixian — see [LICENSE](LICENSE).
 
 ## 中文摘要
 
-**AuditAgent** 是德勤数字化精英挑战赛 Team I 赛道（基于 Agentic AI 的智能审计系统）的交互式方案演示：面向跨境电商场景，以“规则→图谱→人工复核”三段式主动审计识别刷单风险。四页签：风险总览、可调阈值的五条审计规则、共享资源团伙图谱（ECharts）、人工复核工作台（结论+操作人+备注留痕，可导出 CSV 证据链）。数据为种子固定的合成数据（含真值表），不含任何真实交易或个人信息。
+**Sentinel** 是德勤数字化精英挑战赛 Team I 赛道（基于 Agentic AI 的智能审计系统）的交互式方案演示：面向跨境电商场景，以“规则→图谱→人工复核”三段式主动审计识别刷单风险。四页签：风险总览、可调阈值的五条审计规则、共享资源团伙图谱（ECharts）、人工复核工作台（结论+操作人+备注留痕，可导出 CSV 证据链）。数据为种子固定的合成数据（含真值表），不含任何真实交易或个人信息。
 
 ## Русский (кратко)
 
-**AuditAgent** — интерактивная демонстрация интеллектуального аудита (Deloitte Digital Camp 2026, трек I): выявление рисков накрутки заказов в трансграничной электронной торговле по схеме «правила → граф общих ресурсов → решение человека с аудиторским следом». Данные синтетические (seed = 42), без реальных транзакций и персональных данных.
+**Sentinel** — интерактивная демонстрация интеллектуального аудита (Deloitte Digital Camp 2026, трек I): выявление рисков накрутки заказов в трансграничной электронной торговле по схеме «правила → граф общих ресурсов → решение человека с аудиторским следом». Данные синтетические (seed = 42), без реальных транзакций и персональных данных.
