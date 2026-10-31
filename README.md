@@ -2,7 +2,7 @@
 
 **Deloitte Digital Camp 2026 · Team I · cross-border e-commerce transaction audit & fake-order risk detection**
 
-> **Live demo (GitHub Pages):** <https://kaito-ayano.github.io/sentinel/>
+> **Live demo (GitHub Pages):** <https://kaito-ayano.github.io/Sentinel/>
 > 双击 `index.html` 亦可在本地运行（数据走本地 `demo_data.js`，图表需联网加载 ECharts CDN）。
 
 ## What it is
