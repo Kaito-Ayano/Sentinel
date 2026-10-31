@@ -56,24 +56,31 @@
 
     /* ---- R5 热门金额：同一金额 7 天滑动窗口出现 ≥amt 次 ---- */
     const amtDaily = new Map();
+    const amtAcc = new Map();
     for (const o of orders) {
       let m = amtDaily.get(o[4]);
       if (!m) { m = new Map(); amtDaily.set(o[4], m); }
       m.set(o[3].slice(0, 10), (m.get(o[3].slice(0, 10)) || 0) + 1);
+      mapAdd(amtAcc, o[4], o[1]);
     }
     const hotAmt = new Set();
+    const r5Top = [];
     for (const [amt, m] of amtDaily) {
       const days = [...m.keys()].sort();
+      let peak = 0;
       outer:
       for (let i = 0; i < days.length; i++) {
         let s = 0;
         for (let j = i; j < days.length; j++) {
           if (parseD(days[j]) - parseD(days[i]) > 6 * DAY) break;
           s += m.get(days[j]);
+          if (s > peak) peak = s;
           if (s >= t.amt) { hotAmt.add(amt); break outer; }
         }
       }
+      r5Top.push({ amount: amt, peak: peak, nAcc: amtAcc.get(amt).size });
     }
+    r5Top.sort((a, b) => b.peak - a.peak);
 
     /* ---- 逐账户规则命中 ---- */
     const perAcc = new Map();
@@ -161,7 +168,8 @@
         highRiskCount: highRisk.length,
         gangCount: gangs.length
       },
-      trend: trend
+      trend: trend,
+      r5Top: r5Top.slice(0, 10)
     };
   }
 

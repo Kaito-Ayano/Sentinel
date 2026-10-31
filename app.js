@@ -77,6 +77,20 @@
     const byEarly = [...result.perAcc.values()].filter(v => v.hits.includes("r2")).sort((a, b) => b.early - a.early).slice(0, 10);
     $("#sample-r2").innerHTML = byEarly.map(v =>
       `<tr><td class="num">${v.id}</td><td class="num">${fmt(v.reg)}</td><td class="num">${v.early}</td><td class="num">${v.nOrders}</td><td class="num">${v.risk}</td></tr>`).join("");
+    // R3：共享资源（IP/设备）Top 5；R4：地址 Top 5；R5：金额模式 Top
+    const highSet2 = new Set(result.highRisk);
+    const resRows = (m, type) => [...m].map(([res, s]) => ({
+      res, type, n: s.size, h: [...s].filter(a => highSet2.has(a)).length
+    })).sort((a, b) => b.n - a.n).slice(0, 5);
+    const r3rows = [...resRows(result.resources.ipAcc, "IP"), ...resRows(result.resources.devAcc, "设备")]
+      .sort((a, b) => b.n - a.n).slice(0, 5);
+    $("#sample-r3").innerHTML = r3rows.map(r =>
+      `<tr><td class="num">${r.res}</td><td>${r.type}</td><td class="num">${r.n}</td><td class="num">${r.h}</td></tr>`).join("");
+    $("#sample-r4").innerHTML = resRows(result.resources.addrAcc, "地址").map(r =>
+      `<tr><td class="num">${r.res}</td><td class="num">${r.n}</td><td class="num">${r.h}</td></tr>`).join("");
+    const r5rows = result.r5Top || [];
+    $("#sample-r5").innerHTML = r5rows.map(r =>
+      `<tr><td class="num">${r.amount}</td><td class="num">${r.peak}</td><td class="num">${r.nAcc}</td></tr>`).join("");
   }
 
   function buildRuleCards() {
