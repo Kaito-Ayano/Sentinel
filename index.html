@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AuditAgent · 跨境电商智能审计（Team I 方案演示）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>AuditAgent</h1>
+    <span class="tag">AI 辅助审计 · 跨境电商交易审计与刷单风险主动发现 ｜ Deloitte Digital Camp 2026 · Team I</span>
+  </div>
+  <nav id="nav">
+    <button data-page="overview" class="active">风险总览</button>
+    <button data-page="rules">风险特征规则</button>
+    <button data-page="graph">团伙关系图谱 <span class="todo">(D3)</span></button>
+    <button data-page="review">人工复核工作台 <span class="todo">(D4)</span></button>
+  </nav>
+</header>
+<main>
+  <!-- ============ 页签 1：风险总览 ============ -->
+  <section id="page-overview" class="page active">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="label">订单量（90 天）</div><div class="value" id="kpi-orders">-</div><div class="sub">2026-07-01 至 09-28 · 合成数据</div></div>
+      <div class="kpi"><div class="label">异常订单占比</div><div class="value green" id="kpi-share">-</div><div class="sub">高风险账户订单 / 全部订单</div></div>
+      <div class="kpi"><div class="label">高风险账户</div><div class="value" id="kpi-high">-</div><div class="sub">风险分 ≥ 4（默认规则+权重）</div></div>
+      <div class="kpi"><div class="label">疑似刷单团伙</div><div class="value" id="kpi-gangs">-</div><div class="sub">共享资源连通分量</div></div>
+    </div>
+    <div class="card">
+      <h3>近 30 日异常订单趋势<span class="en">anomaly orders · last 30 days</span></h3>
+      <div id="trend"></div>
+    </div>
+    <div class="card">
+      <h3>演示说明<span class="en">60-second narrative</span></h3>
+      <p style="margin:0;line-height:1.9;color:#6b7a8c">
+        从审计现场经验出发：单点 AI 工具不可信，先定义风险规则，再用共享资源图谱拼出团伙，
+        最后把裁决权交还人工并留痕——这就是规则 → 图谱 → 复核的三段式主动审计。
+        阈值可在「风险特征规则」页调整后重算。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 页签 2：风险特征规则 ============ -->
+  <section id="page-rules" class="page">
+    <div class="chips">
+      <span class="chip">高风险账户 <b id="chip-high">-</b></span>
+      <span class="chip">疑似团伙 <b id="chip-gangs">-</b></span>
+      <span class="chip">风险分 = R1×3 + R2~R5×2，≥4 记高风险</span>
+    </div>
+    <div class="rules-grid" id="rules-grid"></div>
+    <div class="card">
+      <h3>示例命中 · R1 凌晨集中下单 Top 10<span class="en">按 7 天窗口凌晨订单峰值</span></h3>
+      <table><thead><tr><th>账户</th><th>注册日期</th><th>7天窗口凌晨峰值</th><th>总订单</th><th>风险分</th></tr></thead>
+      <tbody id="sample-r1"></tbody></table>
+    </div>
+    <div class="card">
+      <h3>示例命中 · R2 新账户早期爆发 Top 10<span class="en">按注册后 7 天内下单笔数</span></h3>
+      <table><thead><tr><th>账户</th><th>注册日期</th><th>注册后7天下单</th><th>总订单</th><th>风险分</th></tr></thead>
+      <tbody id="sample-r2"></tbody></table>
+    </div>
+    <p style="font-size:12px;color:#6b7a8c;margin-top:10px">
+      提示：R3 设备阈值默认为 3，会命中约 70+ 个「家庭共用设备」的正常账户——现场把设备阈值滑到 4，即可演示规则降噪。
+    </p>
+  </section>
+
+  <!-- ============ 页签 3：团伙关系图谱（D3） ============ -->
+  <section id="page-graph" class="page">
+    <div class="card" style="margin-top:0">
+      <div class="g-toolbar">
+        <span class="g-title">团伙关系图谱<span class="en" style="margin-left:8px">shared-resource force graph</span></span>
+        <label class="g-toggle"><input type="checkbox" id="g-show-labels" checked> 账户标签</label>
+        <span class="g-hint" id="g-hint"></span>
+      </div>
+      <div id="graphChart"></div>
+    </div>
+    <div class="side" id="graph-side"><h4>选中节点</h4><div style="color:#6b7a8c;font-size:12px">点击图谱中的账户或共享资源查看详情，并高亮其所在团伙。</div></div>
+  </section>
+
+  <!-- ============ 页签 4：人工复核工作台（D4） ============ -->
+  <section id="page-review" class="page">
+    <div class="card" style="margin-top:0">
+      <div class="r-toolbar">
+        <span class="r-title">人工复核工作台<span class="en" style="margin-left:8px">human-in-the-loop review</span></span>
+        <label class="g-toggle">操作人
+          <input type="text" id="r-operator" size="10" placeholder="auditor">
+        </label>
+        <button class="btn" id="btn-export">导出复核记录 CSV</button>
+        <button class="btn ghost" id="btn-clear">清空记录</button>
+      </div>
+      <p class="r-note">规则初筛高风险账户 → 人工逐条裁决：确认 / 排除 / 待查；每条留操作人与备注。复核记录本地保存，导出 CSV 即证据链。</p>
+      <div class="chips" id="r-filters">
+        <button class="chip btn-f active" data-f="all">全部 <b id="fc-all">-</b></button>
+        <button class="chip btn-f" data-f="pending">待处理 <b id="fc-pending">-</b></button>
+        <button class="chip btn-f" data-f="confirmed">已确认 <b id="fc-confirmed">-</b></button>
+        <button class="chip btn-f" data-f="excluded">已排除 <b id="fc-excluded">-</b></button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="overflow-x:auto">
+        <table class="review">
+          <thead><tr><th>账户</th><th>风险分</th><th>命中规则</th><th>订单</th><th>注册日期</th><th>复核结论</th><th>操作人</th><th>备注</th><th>复核时间</th></tr></thead>
+          <tbody id="review-body"></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:#6b7a8c;margin-bottom:0">
+        演示提示：挑一个风险分恰好为 4 的低分账户（大概率是深夜购物/家庭共设备的正常客户）判“排除”，备注写明理由——这就是“机器初筛+人工裁决”的闭环展示。
+      </p>
+    </div>
+  </section>
+</main>
+<footer>
+  合成演示数据，非真实数据 ｜ 仅用于 Deloitte Digital Camp Team I 方案演示 ｜ <span class="warn">AuditAgent</span>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="demo_data.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
